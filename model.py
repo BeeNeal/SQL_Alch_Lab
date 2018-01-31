@@ -54,15 +54,22 @@ class Rating(db.Model):
     __tablename__ = 'ratings'
 
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    movie_id = db.Column(db.Integer, nullable=False, db.ForeignKey=('movies.movie_id')) #ask about foreign key
-    user_id = db.Column(db.Integer, nullable=False)
-    score = db.Column(db.Integer, nullable=False) #ask about validating specific range of ratings 1-5
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.movie_id'), nullable=False)  #ask about foreign key
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    score = db.Column(db.Integer, nullable=False)  # ask about validating specific range of ratings 1-5
 
+    user = db.relationship("User",
+                           backref=db.backref("ratings",
+                                              order_by=rating_id))
+    movie = db.relationship("Movie",
+                            backref=db.backref("ratings",
+                                               order_by=rating_id))
     def __repr__(self):
-    """Provide helpful representation when printed."""
-        return "<Rating rating_id={} movie_id={} user_id={} score={}>".format(self.rating_id,
-                                                                           self.movie_id,
-                                                                           self.user_id,
+        """Provide helpful representation when printed."""
+
+        repr_str = "<Rating rating_id={} movie_id={} user_id={} score={}>"
+        return repr_str.format(self.rating_id, self.movie_id, self.user_id, 
+                               self.score)
 
 # Why is ForeignKey camel case? What is it's data type?
 # What is backref?!

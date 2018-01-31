@@ -78,7 +78,7 @@ def load_ratings():
         score = split_row[2]
         # rating_id = rating_id
 
-        rating = Rating(user_id=user_id, movie_id = movie_id, score=score)
+        rating = Rating(user_id=user_id, movie_id=movie_id, score=score)
 
         db.session.add(rating)
     
