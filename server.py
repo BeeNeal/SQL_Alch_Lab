@@ -102,15 +102,22 @@ def logout():
 
     return redirect('/login')
 
-@app.route('/users/<user.user_id>') 
-def userinfo():
+@app.route('/users/<int:user_id>')
+def userinfo(user_id):   # argument can be passed to view function from URL this way
     """Page that shows info about a particular user"""
     flash("User info yay!")
 
-    user = User.query.filter(User.user_id == user.user_id).first()
+    user = User.query.filter(User.user_id == user_id).first()
+    user_movies = db.session.query(Movie).filter(User.user_id == user_id).all()
 
 
-    return render_template('indiv_user.html') #pass user object to jinja; unpack in jinja
+    # trying to find all movies rated from user_id
+    # SQL: SELECT title FROM movies JOIN ratings USING (movie_id) 
+    # JOIN users ON (users.user_id = ratings.user_id) WHERE users.user_id = 942;
+    #translate to SQLAlch
+
+
+    return render_template('indiv_user.html', user=user, movies=user_movies) #pass user object to jinja; unpack in jinja
 
 
 if __name__ == "__main__":
