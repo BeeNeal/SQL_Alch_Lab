@@ -6,8 +6,8 @@ User {{ user.email }}
 <p>age: {{ user.age }}</p>
 
 Movie Ratings
-{% for m in movies %}
-<ul> {{ m.title }}</ul>
+{% for r in user_ratings %}
+<ul> {{ r.movie.title }}: {{ r.score }}</ul>
 {% endfor %}
 
 {% endblock %}

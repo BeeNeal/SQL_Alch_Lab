@@ -108,8 +108,40 @@ def userinfo(user_id):   # argument can be passed to view function from URL this
     flash("User info yay!")
 
     user = User.query.filter(User.user_id == user_id).first()
-    user_movies = db.session.query(Movie).filter(User.user_id == user_id).all()
+    # print user
+    user_ratings = db.session.query(Rating).filter(Rating.user_id == user_id).all() #why .all not needed
+    #user_ratings = db.session.query(Rating).filter_by(user_id=user_id).all()
+    print user_ratings
 
+    return render_template('indiv_user.html',user=user, user_ratings=user_ratings) #pass user object to jinja; unpack in jinja
+
+
+@app.route('/movies')
+def showmovie():
+    """Show page of list of movies"""
+
+    movies = db.session.query(Movie).order_by(Movie.title).all()
+    print "THIS ************!!!!!!!!!!!!!^^^^^^^^^^^^"
+    print movies
+
+    return render_template('movies.html',movies=movies)
+
+@app.route('/movies/<movie_title>')
+def movieInfo(movie_title):
+    """Display info about movie"""
+
+    movie = db.session.query(Movie).filter_by(title=movie_title).first()
+    # movie_ratings = db.session.query(Rating).filter_by(Movie.title=movie_title).all()
+    movie_ratings = db.session.query(Rating).filter(movie.title == movie_title).all()
+
+    r = movie.query.filter(movie.title == movie_title)
+    return render_template('indiv_movie.html', movie=movie, movie_ratings=movie_ratings)
+
+#     SELECT movies.movie_id AS movies_movie_id, movies.title AS movies_title, movies.released_at AS movies_released_at, movies.imdb_url AS movies_imdb_url 
+# FROM movies, users 
+# WHERE users.user_id = %(user_id_1)s
+
+    #not quite working - movie titles aren't lining up with correct user_id
 
     # trying to find all movies rated from user_id
     # SQL: SELECT title FROM movies JOIN ratings USING (movie_id) 
@@ -117,7 +149,6 @@ def userinfo(user_id):   # argument can be passed to view function from URL this
     #translate to SQLAlch
 
 
-    return render_template('indiv_user.html', user=user, movies=user_movies) #pass user object to jinja; unpack in jinja
 
 
 if __name__ == "__main__":
