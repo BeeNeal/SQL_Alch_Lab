@@ -75,8 +75,6 @@ def login():
     # user = db.session.query(User).filter_by(email = email).first() #why does this not work?
     user = User.query.filter(User.email == email).first()
 
-    print "THIS IS IT!!!!!!!!!*******{}".format(user) 
-
     if not user:  # == None
         flash("Please register")
         return redirect('/register')
@@ -109,7 +107,7 @@ def userinfo(user_id):   # argument can be passed to view function from URL this
 
     user = User.query.filter(User.user_id == user_id).first()
     # print user
-    user_ratings = db.session.query(Rating).filter(Rating.user_id == user_id).all() #why .all not needed
+    user_ratings = Rating.query.filter(Rating.user_id == user_id).all() #why .all not needed
     #user_ratings = db.session.query(Rating).filter_by(user_id=user_id).all()
     print user_ratings
 
@@ -121,8 +119,6 @@ def showmovie():
     """Show page of list of movies"""
 
     movies = db.session.query(Movie).order_by(Movie.title).all()
-    print "THIS ************!!!!!!!!!!!!!^^^^^^^^^^^^"
-    print movies
 
     return render_template('movies.html',movies=movies)
 
@@ -130,23 +126,58 @@ def showmovie():
 def movieInfo(movie_title):
     """Display info about movie"""
 
-    movie = db.session.query(Movie).filter_by(title=movie_title).first()
+    movie = Movie.query.filter_by(title=movie_title).first()
     # movie_ratings = db.session.query(Rating).filter_by(Movie.title=movie_title).all()
-    movie_ratings = db.session.query(Rating).filter(movie.title == movie_title).all()
+    # movie_ratings = db.session.query(Rating).filter(movie.title == movie_title).all()
 
-    r = movie.query.filter(movie.title == movie_title)
-    return render_template('indiv_movie.html', movie=movie, movie_ratings=movie_ratings)
+    # r = movie.query.filter(movie.title == movie_title)
 
-#     SELECT movies.movie_id AS movies_movie_id, movies.title AS movies_title, movies.released_at AS movies_released_at, movies.imdb_url AS movies_imdb_url 
-# FROM movies, users 
-# WHERE users.user_id = %(user_id_1)s
+    # movie_ratings = db.session.query(Rating).filter(Rating.movie_id == 10).all()
 
-    #not quite working - movie titles aren't lining up with correct user_id
+    # movie_object = db.session.query(Movie).filter_by(title=movie_title).first()
 
-    # trying to find all movies rated from user_id
-    # SQL: SELECT title FROM movies JOIN ratings USING (movie_id) 
-    # JOIN users ON (users.user_id = ratings.user_id) WHERE users.user_id = 942;
-    #translate to SQLAlch
+    # movie_ratings = db.session.query(Rating).filter(Rating.movies.movie_object == movie_title).all()
+
+    # all_ratings_4 = Rating.query.filter_by(score=4).all()
+    # all movies that user 200 has rated
+
+    # Rating.query.filter_by(user_id=200).all() - practice
+
+    # #User table; using user ID 200; get back user object
+
+    # user200 = User.query.filter_by(user_id=200).first() #gets user object - practice
+    # user200.ratings - practice
+
+
+    return render_template('indiv_movie.html', movie=movie)
+
+@app.route('/movies/addrating' methods=["POST"])
+def addRating():
+    """Processing movie rating form"""
+    # do a lookup query to get user ID from user email. save the user ID
+    # get list of all movies rated from user_id (as a movie object) -- or from user email
+    # query the list of movies to see if user has rated that movie
+
+
+
+    new_rating = request.form.get('rating')
+
+    #user_id = User.query.filter_by(email=[user email])
+
+    #user_rated_movies = Ratings.query.filter_by(user_id = user_id) #or we can get user_id
+    #user_rated_movies.filter_by(movie.title)
+
+
+
+    #is User logged in?
+    if 'user' in session:
+        user_email = session['user']
+        if 
+        #check DB
+            return redirect("/")
+        else:
+            flash('Please login to rate!')
+            return redirect('login.html')
 
 
 
